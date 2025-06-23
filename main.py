@@ -49,26 +49,6 @@ def copy_template_block_to_active_canvas(template_block):
     canvas_manager.add_block_to_current_canvas(new_block)
     print(f"Block copied successfully: {new_block}")
 
-def delete_selected_block():
-    global selected_block
-    if selected_block is None:
-        print("[DEBUG] No block selected to delete!")
-        return
-    print(f"[DEBUG] Trying to delete block: {selected_block}")
-    delete_canvas_block(selected_block)
-    selected_block = None
-
-def delete_canvas_block(block):
-    if block in active_blocks:
-        active_blocks.remove(block)
-        if block.canvas in canvas_manager.canvas_blocks:
-            if block in canvas_manager.canvas_blocks[block.canvas]:
-                canvas_manager.canvas_blocks[block.canvas].remove(block)
-        block.clear()
-        print(f"[DEBUG] Deleted block: {block}")
-    else:
-        print(f"[DEBUG] Block not found in active_blocks")
-
 def bind_events_to_all_canvases():
     for canvas in canvas_manager.canvases.values():
         canvas.unbind("<ButtonPress-1>")
