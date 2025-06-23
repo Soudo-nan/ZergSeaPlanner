@@ -1,3 +1,4 @@
+from functools import partial
 import tkinter as tk
 from sidelist import SideList
 from gridblock import GridBlock
@@ -49,15 +50,16 @@ def copy_template_block_to_active_canvas(template_block):
     canvas_manager.add_block_to_current_canvas(new_block)
     print(f"Block copied successfully: {new_block}")
 
+bound_canvases = set()
+
 def bind_events_to_all_canvases():
     for canvas in canvas_manager.canvases.values():
-        canvas.unbind("<ButtonPress-1>")
-        canvas.unbind("<B1-Motion>")
-        canvas.unbind("<ButtonRelease-1>")
-
-        canvas.bind("<ButtonPress-1>", lambda event, c=canvas: on_press(event, canvas_manager.canvas_blocks[c]))
-        canvas.bind("<B1-Motion>", lambda event, c=canvas: on_drag(event, canvas_manager.canvas_blocks[c]))
-        canvas.bind("<ButtonRelease-1>", lambda event, c=canvas: on_release(event, canvas_manager.canvas_blocks[c]))
+        if canvas not in bound_canvases:
+            canvas.bind("<ButtonPress-1>", lambda event, c=canvas: on_press(event, canvas_manager.canvas_blocks[c]))
+            canvas.bind("<B1-Motion>", lambda event, c=canvas: on_drag(event, canvas_manager.canvas_blocks[c]))
+            canvas.bind("<ButtonRelease-1>", lambda event, c=canvas: on_release(event, canvas_manager.canvas_blocks[c]))
+            bound_canvases.add(canvas)
+        canvas.bind("<ButtonRelease-1>", partial(on_release, canvas_blocks=canvas_manager.canvas_blocks[canvas]))
 
 # ====== Bind events and canvas setup ======
 bind_events_to_all_canvases()
@@ -65,11 +67,11 @@ bind_events_to_all_canvases()
 def on_canvas_switch(name):
     print(f"Switched to canvas: {name}")
     bind_events_to_all_canvases()
-    canvas_manager._draw_grid(canvas_manager.get_current_canvas())
+    canvas_manager.draw_grid(canvas_manager.get_current_canvas())
 
 canvas_manager.set_on_switch_callback(on_canvas_switch)
 
-canvas_manager._draw_grid(canvas_manager.get_current_canvas())
+canvas_manager.draw_grid(canvas_manager.get_current_canvas())
 create_template_blocks(sidebar, copy_template_block_to_active_canvas)
 
 root.mainloop()
