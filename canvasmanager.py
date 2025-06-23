@@ -33,7 +33,7 @@ class CanvasManager:
             height=GRID_SIZE * GRID_HEIGHT,
             bg="white"
         )
-        self._draw_grid(canvas)
+        self.draw_grid(canvas)
         self.canvases[name] = canvas
         self.canvas_blocks[canvas] = []
 
@@ -63,7 +63,7 @@ class CanvasManager:
         if canvas:
             self.canvas_blocks[canvas].append(block)
 
-    def _draw_grid(self, canvas):
+    def draw_grid(self, canvas):
         for i in range(GRID_WIDTH + 1):
             canvas.create_line(i * GRID_SIZE, 0, i * GRID_SIZE, GRID_SIZE * GRID_HEIGHT, fill="gray")
         for j in range(GRID_HEIGHT + 1):
