@@ -2,7 +2,7 @@ import tkinter as tk
 from sidelist import SideList
 from gridblock import GridBlock
 from config import GRID_SIZE, GRID_WIDTH, GRID_HEIGHT
-from mousecontrol import on_press, on_drag, on_release, on_right_click, on_left_click, bind_block_events
+from mousecontrol import on_press, on_drag, on_release, on_left_click, bind_block_events
 from canvasmanager import CanvasManager
 from block_library import create_template_blocks
 
@@ -11,16 +11,12 @@ root = tk.Tk()
 template_blocks_by_tag = {}
 selected_block = None
 
-# ====== Menus ======
-popup_menu_main = tk.Menu(root, tearoff=0)
-popup_menu_sidebar = tk.Menu(root, tearoff=0)
-
 # ====== Sidebar and Canvas Manager ======
 sidebar = SideList(root)
 canvas_manager = CanvasManager(root, canvas_names=["Canvas 1", "Canvas 2", "Canvas 3", "Canvas 4"])
 
 # ====== Trackers ======
-active_blocks = []  # All blocks on all canvases
+active_blocks = []
 
 def set_selected_block(block):
     global selected_block
@@ -64,24 +60,14 @@ def delete_selected_block():
 
 def delete_canvas_block(block):
     if block in active_blocks:
-        # Remove from active_blocks
         active_blocks.remove(block)
-        # Remove from canvas_manager's tracking
         if block.canvas in canvas_manager.canvas_blocks:
             if block in canvas_manager.canvas_blocks[block.canvas]:
                 canvas_manager.canvas_blocks[block.canvas].remove(block)
-        # Clear from canvas
         block.clear()
         print(f"[DEBUG] Deleted block: {block}")
     else:
         print(f"[DEBUG] Block not found in active_blocks")
-
-def on_right_click_canvas(event, block):
-    # Set selected block, show main popup menu
-    set_selected_block(block)
-    print(f"[DEBUG] Right click on canvas block: {block}")
-    popup_menu_main.tk_popup(event.x_root, event.y_root)
-    popup_menu_main.grab_release()
 
 def bind_events_to_all_canvases():
     for canvas in canvas_manager.canvases.values():
@@ -93,24 +79,17 @@ def bind_events_to_all_canvases():
         canvas.bind("<B1-Motion>", lambda event, c=canvas: on_drag(event, canvas_manager.canvas_blocks[c]))
         canvas.bind("<ButtonRelease-1>", lambda event, c=canvas: on_release(event, canvas_manager.canvas_blocks[c]))
 
-# ====== Context Menu Config ======
-popup_menu_main.add_command(label="Delete Block", command=delete_selected_block)
-
-# Bind events for all canvases and blocks initially
+# ====== Bind events and canvas setup ======
 bind_events_to_all_canvases()
 
-# Update event bindings when canvas is switched
 def on_canvas_switch(name):
     print(f"Switched to canvas: {name}")
     bind_events_to_all_canvases()
     canvas_manager._draw_grid(canvas_manager.get_current_canvas())
 
-# Set switch callback
 canvas_manager.set_on_switch_callback(on_canvas_switch)
 
-# ====== Initial Drawing ======
 canvas_manager._draw_grid(canvas_manager.get_current_canvas())
 create_template_blocks(sidebar, copy_template_block_to_active_canvas)
 
-# ====== Launch ======
 root.mainloop()
