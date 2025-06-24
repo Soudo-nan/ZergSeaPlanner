@@ -103,20 +103,6 @@ class GridBlock:
         self.selected = selected
         self.draw()
 
-    def clone(self, canvas=None):
-        return GridBlock(
-            canvas or self.canvas,
-            self.col,
-            self.row,
-            self.width,
-            self.height,
-            self.color,
-            self.tag,
-            self.label,
-            self.outline_color,
-            self.outline_width
-        )
-
 class DummyBlock:
     """Helper block for collision checks without canvas."""
     def __init__(self, col, row, width, height):

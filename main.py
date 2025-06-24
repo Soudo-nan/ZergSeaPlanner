@@ -1,14 +1,13 @@
 from functools import partial
 import tkinter as tk
 from sidelist import SideList
-from config import GRID_SIZE, GRID_WIDTH, GRID_HEIGHT
+from config import active_blocks
 from mousecontrol import on_press, on_drag, on_release, on_left_click, bind_block_events
 from canvasmanager import CanvasManager
 
 # ====== Initialize App ======
 root = tk.Tk()
 selected_block = None
-active_blocks = []
 
 # ====== Canvas Manager ======
 canvas_manager = CanvasManager(root, canvas_names=["Canvas 1", "Canvas 2", "Canvas 3", "Canvas 4"])

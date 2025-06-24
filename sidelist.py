@@ -1,5 +1,5 @@
 import tkinter as tk
-from config import GRID_SIZE, SIDEBAR_WIDTH
+from config import GRID_SIZE, SIDEBAR_WIDTH, active_blocks
 from gridblock import GridBlock
 from mousecontrol import bind_block_events, on_left_click
 from block_library import create_template_blocks

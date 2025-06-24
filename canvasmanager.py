@@ -11,6 +11,7 @@ class CanvasManager:
         self.canvas_blocks = {}  # map each canvas -> list of blocks
         self.selector = tk.StringVar()
         self.selector.trace_add("write", self._on_canvas_select)
+        self.grid_cache = {}  # 新增缓存
 
         self.dropdown = tk.OptionMenu(parent, self.selector, ())
         self.dropdown.pack(side=tk.TOP, pady=5)
@@ -64,10 +65,16 @@ class CanvasManager:
             self.canvas_blocks[canvas].append(block)
 
     def draw_grid(self, canvas):
+        if canvas in self.grid_cache:
+            print("[DEBUG] Grid already drawn for this canvas, skipping redraw.")
+            # 如果网格已经绘制过，直接返回
+            return
+        print("[DEBUG] Drawing grid for canvas.")
         for i in range(GRID_WIDTH + 1):
             canvas.create_line(i * GRID_SIZE, 0, i * GRID_SIZE, GRID_SIZE * GRID_HEIGHT, fill="gray")
         for j in range(GRID_HEIGHT + 1):
             canvas.create_line(0, j * GRID_SIZE, GRID_SIZE * GRID_WIDTH, j * GRID_SIZE, fill="gray")
+        self.grid_cache[canvas] = True  # 缓存绘制状态
 
     def bind_mouse_events(self, on_press, on_drag, on_release):
         # Fix late binding by capturing blocks list per canvas properly
