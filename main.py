@@ -10,7 +10,7 @@ root = tk.Tk()
 selected_block = None
 
 # ====== Canvas Manager ======
-canvas_manager = CanvasManager(root, canvas_names=["Canvas 1", "Canvas 2", "Canvas 3", "Canvas 4"])
+canvas_manager = CanvasManager(root)  # 修正：移除 canvas_names 参数
 
 # ====== Sidebar ======
 sidebar = SideList(root, canvas_manager, active_blocks)
