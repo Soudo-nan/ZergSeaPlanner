@@ -11,9 +11,8 @@ class CanvasManager:
         self.canvas_blocks = {}  # map each canvas -> list of blocks
         self.grid_cache = {}  # Cache for grid drawing
 
-        # Create canvas navigation bar
-        self.nav_bar = tk.Frame(parent)
-        self.nav_bar.pack(side=tk.TOP, fill=tk.X)
+        self.nav_bar = tk.Frame(self.canvas_frame)
+        self.nav_bar.pack(side=tk.TOP, anchor="nw", fill=tk.X)
 
         for name in canvas_list:
             self.add_canvas(name)

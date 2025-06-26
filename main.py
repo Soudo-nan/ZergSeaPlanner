@@ -31,7 +31,6 @@ def bind_events_to_all_canvases():
             canvas.bind("<B1-Motion>", lambda event, c=canvas: on_drag(event, canvas_manager.canvas_blocks[c]))
             canvas.bind("<ButtonRelease-1>", lambda event, c=canvas: on_release(event, canvas_manager.canvas_blocks[c]))
             bound_canvases.add(canvas)
-
 bind_events_to_all_canvases()
 
 def on_canvas_switch(name):

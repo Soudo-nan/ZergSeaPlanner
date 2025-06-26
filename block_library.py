@@ -21,7 +21,13 @@ def create_template_blocks(sidebar, copy_callback):
 
     # Add your blocks here
     create(1, 1, 2, 2, "blue", "Protess", "建筑")
-    create(1, 4, 1, 3, "green", "Terran", "一号")
+    create(1, 4, 1, 3, "green", "Terran", "一号")   
     create(1, 7, 3, 1, "red", "Zerg", "噩耗")
-
+    create(4, 7, 3, 1, "orange", "Zerg", "噩耗")    
+    create(7, 1, 2, 2, "cyan", "Protess", "建筑")
+    create(7, 4, 1, 3, "magenta", "Terran", "三号")
+    create(7, 7, 3, 1, "brown", "Zerg", "噩耗")
+    create(4, 1, 2, 2, "yellow", "Protess", "建筑")
+    create(4, 4, 1, 3, "purple", "Terran", "二号")
+    create(7, 7, 3, 1, "brown", "Zerg", "噩耗")
     sidebar.refresh_tag_list(template_blocks_by_tag)
