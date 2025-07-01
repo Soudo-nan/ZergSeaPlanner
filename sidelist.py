@@ -60,6 +60,9 @@ class SideList:
         new_block.draw()
         self.active_blocks.append(new_block)
         self.canvas_manager.add_block_to_current_canvas(new_block)
+        # 刷新 active block list（如果有）
+        if hasattr(self.canvas_manager, "on_switch_callback"):
+            self.canvas_manager.on_switch_callback(self.canvas_manager.current_canvas_name)
         bind_block_events(new_block, new_block.canvas, new_block.canvas, on_left_click, lambda e, b=new_block: None)
         print(f"Block copied successfully: {new_block}")
 

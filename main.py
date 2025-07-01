@@ -4,16 +4,18 @@ from sidelist import SideList
 from config import active_blocks
 from mousecontrol import on_press, on_drag, on_release, on_left_click, bind_block_events
 from canvasmanager import CanvasManager
+from activeblocklist import ActiveBlockList
 
 # ====== Initialize App ======
 root = tk.Tk()
 selected_block = None
 
 # ====== Canvas Manager ======
-canvas_manager = CanvasManager(root)  # 修正：移除 canvas_names 参数
+canvas_manager = CanvasManager(root)
 
 # ====== Sidebar ======
 sidebar = SideList(root, canvas_manager, active_blocks)
+active_block_list = ActiveBlockList(root, canvas_manager)
 
 # ====== Block Selection ======
 def set_selected_block(block):
@@ -37,6 +39,7 @@ def on_canvas_switch(name):
     print(f"Switched to canvas: {name}")
     bind_events_to_all_canvases()
     canvas_manager.draw_grid(canvas_manager.get_current_canvas())
+    active_block_list.refresh()
 
 canvas_manager.set_on_switch_callback(on_canvas_switch)
 

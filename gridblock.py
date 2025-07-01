@@ -44,8 +44,12 @@ class GridBlock:
         outline = self.outline_color if self.selected else ""
         width = self.outline_width if self.selected else 1
 
-        self.id = canvas.create_rectangle(x1, y1, x2, y2, fill=self.color, outline=outline, width=width)
-        self.text_id = canvas.create_text((x1 + x2) // 2, (y1 + y2) // 2, text=self.label)
+        self.id = canvas.create_rectangle(
+            x1, y1, x2, y2, fill=self.color, outline=outline, width=width, tags="block"
+        )
+        self.text_id = canvas.create_text(
+            (x1 + x2) // 2, (y1 + y2) // 2, text=self.label, tags="block"
+        )
 
     # Optionally update self.canvas if not already assigned
         if self.canvas is None:
