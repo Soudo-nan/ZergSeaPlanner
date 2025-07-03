@@ -1,5 +1,5 @@
 import tkinter as tk
-from config import GRID_SIZE, GRID_WIDTH, GRID_HEIGHT, canvas_list
+from config import GRID_SIZE, canvas_list, canvas_size_dict
 
 class CanvasManager:
     def __init__(self, parent):
@@ -8,8 +8,9 @@ class CanvasManager:
         self.current_canvas_name = None
         self.canvas_frame = tk.Frame(parent)
         self.canvas_frame.pack(side=tk.LEFT)
-        self.canvas_blocks = {}  # map each canvas -> list of blocks
-        self.grid_cache = {}  # Cache for grid drawing
+        self.canvas_blocks = {}
+        self.grid_cache = {}
+        self.canvas_sizes = {}  # 新增
 
         self.nav_bar = tk.Frame(self.canvas_frame)
         self.nav_bar.pack(side=tk.TOP, anchor="nw", fill=tk.X)
@@ -18,20 +19,21 @@ class CanvasManager:
             self.add_canvas(name)
             self.create_nav_button(name)
 
-        # Show the first canvas by default
         self.switch_to(canvas_list[0])
 
     def add_canvas(self, name):
         if name in self.canvases:
             return
 
+        width, height = canvas_size_dict.get(name, (20, 15))
         canvas = tk.Canvas(
             self.canvas_frame,
-            width=GRID_SIZE * GRID_WIDTH,
-            height=GRID_SIZE * GRID_HEIGHT,
+            width=GRID_SIZE * width,
+            height=GRID_SIZE * height,
             bg="white"
         )
-        self.draw_grid(canvas)
+        self.canvas_sizes[canvas] = (width, height)
+        self.draw_grid(canvas, width, height)
         self.canvases[name] = canvas
         self.canvas_blocks[canvas] = []
 
@@ -61,15 +63,17 @@ class CanvasManager:
         if canvas:
             self.canvas_blocks[canvas].append(block)
 
-    def draw_grid(self, canvas):
+    def draw_grid(self, canvas, width=None, height=None):
         if canvas in self.grid_cache:
             print("[DEBUG] Grid already drawn for this canvas, skipping redraw.")
             return
+        if width is None or height is None:
+            width, height = self.canvas_sizes.get(canvas, (20, 15))
         print("[DEBUG] Drawing grid for canvas.")
-        for i in range(GRID_WIDTH + 1):
-            canvas.create_line(i * GRID_SIZE, 0, i * GRID_SIZE, GRID_SIZE * GRID_HEIGHT, fill="gray")
-        for j in range(GRID_HEIGHT + 1):
-            canvas.create_line(0, j * GRID_SIZE, GRID_SIZE * GRID_WIDTH, j * GRID_SIZE, fill="gray")
+        for i in range(width + 1):
+            canvas.create_line(i * GRID_SIZE, 0, i * GRID_SIZE, GRID_SIZE * height, fill="gray")
+        for j in range(height + 1):
+            canvas.create_line(0, j * GRID_SIZE, GRID_SIZE * width, j * GRID_SIZE, fill="gray")
         self.grid_cache[canvas] = True
 
     def set_on_switch_callback(self, callback):

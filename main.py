@@ -5,6 +5,7 @@ from config import active_blocks
 from mousecontrol import on_press, on_drag, on_release, on_left_click, bind_block_events
 from canvasmanager import CanvasManager
 from activeblocklist import ActiveBlockList
+import mousecontrol
 
 # ====== Initialize App ======
 root = tk.Tk()
@@ -12,6 +13,7 @@ selected_block = None
 
 # ====== Canvas Manager ======
 canvas_manager = CanvasManager(root)
+mousecontrol.canvas_manager = canvas_manager
 
 # ====== Sidebar ======
 sidebar = SideList(root, canvas_manager, active_blocks)
