@@ -28,8 +28,18 @@ def on_drag(event, blocks):
         canvas = event.widget
         if canvas_manager and canvas in canvas_manager.canvas_sizes:
             width, height = canvas_manager.canvas_sizes[canvas]
+            forbidden_cells = canvas_manager.forbidden_cells.get(canvas, set())
         else:
             width, height = GRID_WIDTH, GRID_HEIGHT  # 兜底
+            forbidden_cells = set()
+
+        # 检查是否有重叠到不可放置区
+        def is_in_forbidden_area(x, y, w, h, forbidden):
+            for dx in range(w):
+                for dy in range(h):
+                    if (x + dx, y + dy) in forbidden:
+                        return True
+            return False
 
         if (grid_x != current_dragged_block.col or grid_y != current_dragged_block.row):
             if (
@@ -42,6 +52,11 @@ def on_drag(event, blocks):
                     grid_x, grid_y,
                     current_dragged_block.width, current_dragged_block.height,
                     blocks, exclude_block=current_dragged_block
+                )
+                and not is_in_forbidden_area(
+                    grid_x, grid_y,
+                    current_dragged_block.width, current_dragged_block.height,
+                    forbidden_cells
                 )
             ):
                 print(f"[DEBUG] Moving block {current_dragged_block} to ({grid_x}, {grid_y})")
