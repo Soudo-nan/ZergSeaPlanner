@@ -1,5 +1,6 @@
 from functools import partial
 import tkinter as tk
+import logging
 from sidelist import SideList
 from config import active_blocks
 from mousecontrol import on_press, on_drag, on_release, on_left_click, bind_block_events
@@ -10,6 +11,13 @@ import mousecontrol
 # ====== Initialize App ======
 root = tk.Tk()
 selected_block = None
+
+# ====== Logging Configuration ======
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='[%(levelname)s] %(asctime)s - %(message)s',
+    datefmt='%H:%M:%S'
+)
 
 # ====== Canvas Manager ======
 canvas_manager = CanvasManager(root)
@@ -23,7 +31,7 @@ active_block_list = ActiveBlockList(root, canvas_manager)
 def set_selected_block(block):
     global selected_block
     selected_block = block
-    print(f"[DEBUG] selected_block set: {block}, canvas={block.canvas}")
+    logging.debug(f"selected_block set: {block}, canvas={block.canvas}")
 
 # ====== Canvas Events ======
 bound_canvases = set()
@@ -38,7 +46,7 @@ def bind_events_to_all_canvases():
 bind_events_to_all_canvases()
 
 def on_canvas_switch(name):
-    print(f"Switched to canvas: {name}")
+    logging.info(f"Switched to canvas: {name}")
     bind_events_to_all_canvases()
     canvas_manager.draw_grid(canvas_manager.get_current_canvas())
     active_block_list.refresh()

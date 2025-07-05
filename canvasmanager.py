@@ -1,3 +1,4 @@
+import logging
 import tkinter as tk
 from config import GRID_SIZE, canvas_list, canvas_size_dict, canvas_forbidden_dict
 
@@ -79,11 +80,11 @@ class CanvasManager:
 
     def draw_grid(self, canvas, width=None, height=None):
         if canvas in self.grid_cache:
-            print("[DEBUG] Grid already drawn for this canvas, skipping redraw.")
+            logging.debug("Grid already drawn for this canvas, skipping redraw.")
             return
         if width is None or height is None:
             width, height = self.canvas_sizes.get(canvas, (20, 15))
-        print("[DEBUG] Drawing grid for canvas.")
+        logging.debug("Drawing grid for canvas.")
         for i in range(width + 1):
             canvas.create_line(i * GRID_SIZE, 0, i * GRID_SIZE, GRID_SIZE * height, fill="gray")
         for j in range(height + 1):

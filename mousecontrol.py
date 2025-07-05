@@ -1,3 +1,4 @@
+import logging
 from config import GRID_SIZE, GRID_WIDTH, GRID_HEIGHT
 from gridblock import GridBlock
 from canvasmanager import CanvasManager
@@ -14,7 +15,7 @@ def on_press(event, blocks):
     for block in reversed(blocks):
         if block.contains_point(event.x, event.y):
             current_dragged_block = block
-            print(f"[DEBUG] Mouse down at ({event.x}, {event.y}), dragging block: {block}")
+            logging.debug(f"Mouse down at ({event.x}, {event.y}), dragging block: {block}")
             break
 
 def on_drag(event, blocks):
@@ -59,13 +60,13 @@ def on_drag(event, blocks):
                     forbidden_cells
                 )
             ):
-                print(f"[DEBUG] Moving block {current_dragged_block} to ({grid_x}, {grid_y})")
+                logging.debug(f"Moving block {current_dragged_block} to ({grid_x}, {grid_y})")
                 current_dragged_block.move_to_grid(grid_x, grid_y)
 
 def on_release(event, blocks):
     global current_dragged_block
     if current_dragged_block:
-        print(f"[DEBUG] Released block {current_dragged_block}")
+        logging.debug(f"Released block {current_dragged_block}")
     current_dragged_block = None
 
 def on_left_click(event, block):

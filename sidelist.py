@@ -1,3 +1,4 @@
+import logging
 import tkinter as tk
 from config import GRID_SIZE, SIDEBAR_WIDTH, active_blocks
 from gridblock import GridBlock
@@ -42,11 +43,11 @@ class SideList:
 
     def copy_to_canvas(self, block):
         if block is None:
-            print("Error: No block selected to copy!")
+            logging.error("No block selected to copy!")
             return
         current_canvas = self.canvas_manager.get_current_canvas()
         if current_canvas is None:
-            print("Error: No active canvas to copy to!")
+            logging.error("No active canvas to copy to!")
             return
 
         new_block = GridBlock(
@@ -64,7 +65,7 @@ class SideList:
         if hasattr(self.canvas_manager, "on_switch_callback"):
             self.canvas_manager.on_switch_callback(self.canvas_manager.current_canvas_name)
         bind_block_events(new_block, new_block.canvas, new_block.canvas, on_left_click, lambda e, b=new_block: None)
-        print(f"Block copied successfully: {new_block}")
+        logging.info(f"Block copied successfully: {new_block}")
 
     def add_block_item(self, block, description, add_callback):
         item_frame = tk.Frame(self.scrollable_frame, bd=1, relief="solid", padx=5, pady=5)
@@ -95,7 +96,7 @@ class SideList:
             )
 
     def filter_blocks_by_tag(self, tag):
-        print(f"[DEBUG] filter_blocks_by_tag called with tag: {tag}")
+        logging.debug(f"filter_blocks_by_tag called with tag: {tag}")
         for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
 
@@ -109,4 +110,4 @@ class SideList:
                 cb = getattr(block, 'add_callback', lambda b=None: None)
                 self.add_block_item(block, desc, cb)
             except Exception as e:
-                print(f"[ERROR] Adding block failed: {e}")
+                logging.error(f"Adding block failed: {e}")
