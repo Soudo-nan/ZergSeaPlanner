@@ -56,7 +56,9 @@ class SideList:
             block.height,
             block.color,
             tag=block.tag,
-            label=block.label
+            label=block.label,
+            radius=block.radius,
+            circle_color=block.circle_color
         )
         new_block.draw()
         self.active_blocks.append(new_block)

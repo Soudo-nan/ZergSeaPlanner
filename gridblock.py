@@ -1,8 +1,7 @@
 from config import GRID_SIZE
 
 class GridBlock:
-    def __init__(self, canvas, col, row, width, height, color, tag=None, label="",
-                 outline_color="blue", outline_width=2):
+    def __init__(self, canvas, col, row, width, height, color, tag=None, label="", radius=0, circle_color="green"):
         self.canvas = canvas
         self.col = col
         self.row = row
@@ -11,13 +10,13 @@ class GridBlock:
         self.color = color
         self.tag = tag
         self.label = label
-
-        self.outline_color = outline_color
-        self.outline_width = outline_width
+        self.radius = radius
+        self.circle_color = circle_color
 
         self.id = None          # rectangle canvas item ID
         self.text_id = None     # text canvas item ID
         self.selected = False
+        self.circle_id = None   # circle canvas item ID
 
     def __repr__(self):
         return (f"<GridBlock tag={self.tag} label={self.label} "
@@ -29,12 +28,14 @@ class GridBlock:
         if not canvas:
             raise ValueError("No canvas to draw on.")
 
-    # Remove old visuals if any (only if drawing on the same canvas)
+        # Remove old visuals if any (only if drawing on the same canvas)
         if canvas == self.canvas:
             if self.id:
                 canvas.delete(self.id)
             if self.text_id:
                 canvas.delete(self.text_id)
+            if self.circle_id:
+                canvas.delete(self.circle_id)
 
         x1 = self.col * GRID_SIZE
         y1 = self.row * GRID_SIZE
@@ -51,7 +52,19 @@ class GridBlock:
             (x1 + x2) // 2, (y1 + y2) // 2, text=self.label, tags="block"
         )
 
-    # Optionally update self.canvas if not already assigned
+        # Draw circle
+        if self.radius > 0:
+            cx = (x1 + x2) // 2
+            cy = (y1 + y2) // 2
+            r = self.radius * GRID_SIZE
+            self.circle_id = canvas.create_oval(
+                cx - r, cy - r, cx + r, cy + r,
+                outline=self.circle_color, width=2, dash=(4, 2)
+            )
+        else:
+            self.circle_id = None
+
+        # Optionally update self.canvas if not already assigned
         if self.canvas is None:
             self.canvas = canvas
 
@@ -102,6 +115,9 @@ class GridBlock:
         if self.text_id:
             self.canvas.delete(self.text_id)
             self.text_id = None
+        if self.circle_id:
+            self.canvas.delete(self.circle_id)
+            self.circle_id = None
 
     def set_selected(self, selected=True):
         self.selected = selected
