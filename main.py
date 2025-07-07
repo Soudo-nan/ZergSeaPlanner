@@ -6,6 +6,7 @@ from config import active_blocks
 from mousecontrol import on_press, on_drag, on_release, on_left_click, bind_block_events
 from canvasmanager import CanvasManager
 from activeblocklist import ActiveBlockList
+from block_persistence import save_all_canvases, load_all_canvases
 import mousecontrol
 
 # ====== Initialize App ======
@@ -26,6 +27,15 @@ mousecontrol.canvas_manager = canvas_manager
 # ====== Sidebar ======
 sidebar = SideList(root, canvas_manager, active_blocks)
 active_block_list = ActiveBlockList(root, canvas_manager)
+
+# ====== Load Saved blocks ======
+load_all_canvases(canvas_manager)
+
+# 添加加载的所有块到 active_blocks 统一列表中（方便选中、复制等功能）
+for blocks in canvas_manager.canvas_blocks.values():
+    active_blocks.extend(blocks)
+
+active_block_list.refresh()
 
 # ====== Block Selection ======
 def set_selected_block(block):
@@ -53,6 +63,18 @@ def on_canvas_switch(name):
 
 canvas_manager.set_on_switch_callback(on_canvas_switch)
 
+# ====== Closing Event ======
+def on_closing():
+    # 创建一个 dict：{canvas_name: blocks}
+    canvas_blocks_by_name = {}
+    for name, canvas in canvas_manager.canvases.items():
+        blocks = canvas_manager.canvas_blocks.get(canvas, [])
+        canvas_blocks_by_name[name] = blocks
+
+    save_all_canvases(canvas_blocks_by_name)
+    root.destroy()
+
+root.protocol("WM_DELETE_WINDOW", on_closing)
 # ====== Launch ======
 canvas_manager.draw_grid(canvas_manager.get_current_canvas())
 root.mainloop()
