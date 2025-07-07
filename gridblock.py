@@ -23,7 +23,7 @@ class GridBlock:
                 f"pos=({self.col},{self.row}) size=({self.width}x{self.height}) "
                 f"color={self.color}>")
     
-    def draw(self, canvas=None):
+    def draw(self, canvas=None, offset=True):
         canvas = canvas or self.canvas
         if not canvas:
             raise ValueError("No canvas to draw on.")
@@ -37,8 +37,11 @@ class GridBlock:
             if self.circle_id:
                 canvas.delete(self.circle_id)
 
-        x1 = self.col * GRID_SIZE
-        y1 = self.row * GRID_SIZE
+        if offset:
+            x1 = self.col * GRID_SIZE
+            y1 = self.row * GRID_SIZE
+        else:
+            x1, y1 = 0, 0
         x2 = x1 + self.width * GRID_SIZE
         y2 = y1 + self.height * GRID_SIZE
 

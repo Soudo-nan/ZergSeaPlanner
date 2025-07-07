@@ -70,17 +70,17 @@ class SideList:
         logging.info(f"Block copied successfully: {new_block}")
 
     def add_block_item(self, block, description, add_callback):
-        item_frame = tk.Frame(self.scrollable_frame, bd=1, relief="solid", padx=5, pady=5)
-        item_frame.pack(fill="x", pady=2)
+        item_frame = tk.Frame(self.scrollable_frame, bd=1, relief="solid", padx=0, pady=0)
+        item_frame.pack(fill="x", pady=0)
 
         block_canvas = tk.Canvas(item_frame, width=GRID_SIZE * block.width, height=GRID_SIZE * block.height, bg="white")
         block_canvas.pack()
-        block.draw(canvas=block_canvas)
+        block.draw(canvas=block_canvas, offset=False)
 
         desc_label = tk.Label(item_frame, text=description, wraplength=GRID_SIZE * SIDEBAR_WIDTH)
         desc_label.pack(pady=2)
 
-        add_btn = tk.Button(item_frame, text="Add to Canvas", command=lambda b=block: add_callback(b))
+        add_btn = tk.Button(item_frame, text="添加到左侧", command=lambda b=block: add_callback(b))
         add_btn.pack(pady=2)
 
         if block not in self.saved_blocks:

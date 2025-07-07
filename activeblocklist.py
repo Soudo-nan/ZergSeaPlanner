@@ -7,14 +7,14 @@ class ActiveBlockList:
         self.frame = tk.Frame(master)
         self.frame.pack(side=tk.RIGHT, fill="y", padx=5)
 
-        tk.Label(self.frame, text="当前画布 Blocks", font=("Arial", 12, "bold")).pack(pady=5)
+        tk.Label(self.frame, text="当前场上单位或建筑", font=("Arial", 12, "bold")).pack(pady=5)
 
         self.blocks_frame = tk.Frame(self.frame)
         self.blocks_frame.pack(fill="both", expand=True)
 
         tk.Button(
             self.frame,
-            text="删除当前画布所有Block",
+            text="删除当前所有单位和建筑",
             command=self.delete_all_blocks
         ).pack(pady=10)
 
@@ -52,16 +52,16 @@ class ActiveBlockList:
 
         # 判断是否显示切换圆圈按钮，依据 original_radius
         if getattr(block, "original_radius", 0) > 0:
-            toggle_btn = tk.Button(row, text="隐藏圆圈", width=10)
+            toggle_btn = tk.Button(row, text="隐藏射程", width=10)
             toggle_btn.pack(side="right", padx=(2, 0))
 
             def toggle_circle():
                 if block.radius > 0:
                     block.radius = 0
-                    toggle_btn.config(text="显示圆圈")
+                    toggle_btn.config(text="显示射程")
                 else:
                     block.radius = block.original_radius
-                    toggle_btn.config(text="隐藏圆圈")
+                    toggle_btn.config(text="隐藏射程")
                 block.draw()
 
             toggle_btn.config(command=toggle_circle)
