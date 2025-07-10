@@ -22,7 +22,7 @@ logging.basicConfig(
 
 # ====== Canvas Manager ======
 canvas_manager = CanvasManager(root)
-mousecontrol.canvas_manager = canvas_manager
+mousecontrol.canvas_manager = canvas_manager    
 
 # ====== Sidebar ======
 sidebar = SideList(root, canvas_manager, active_blocks)
