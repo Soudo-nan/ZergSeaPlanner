@@ -20,7 +20,7 @@ class CanvasManager:
         for name in canvas_list:
             self.add_canvas(name)
             self.create_nav_button(name)
-
+        
         self.switch_to(canvas_list[0])
 
     def add_canvas(self, name):

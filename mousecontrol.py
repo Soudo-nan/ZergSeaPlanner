@@ -25,13 +25,12 @@ def on_drag(event, blocks):
         grid_x = event.x // GRID_SIZE
         grid_y = event.y // GRID_SIZE
 
-        # 获取当前canvas的宽高
         canvas = event.widget
         if canvas_manager and canvas in canvas_manager.canvas_sizes:
             width, height = canvas_manager.canvas_sizes[canvas]
             forbidden_cells = canvas_manager.forbidden_cells.get(canvas, set())
         else:
-            width, height = GRID_WIDTH, GRID_HEIGHT  # 兜底
+            width, height = GRID_WIDTH, GRID_HEIGHT
             forbidden_cells = set()
 
         # 检查是否有重叠到不可放置区
@@ -68,15 +67,3 @@ def on_release(event, blocks):
     if current_dragged_block:
         logging.debug(f"Released block {current_dragged_block}")
     current_dragged_block = None
-
-def on_left_click(event, block):
-    selected = getattr(block, 'selected', False)
-    if selected:
-        block.selected = False
-        block.canvas.itemconfig(block.id, outline="", width=1)
-    else:
-        block.selected = True
-        block.canvas.itemconfig(block.id, outline="blue", width=2)
-
-def bind_block_events(block, canvas_for_block, left_click_cb, *_):
-    canvas_for_block.tag_bind(block.id, "<Button-1>", lambda e, b=block: left_click_cb(e, b))

@@ -3,10 +3,11 @@ import tkinter as tk
 import logging
 from sidelist import SideList
 from config import active_blocks
-from mousecontrol import on_press, on_drag, on_release, on_left_click, bind_block_events
+from mousecontrol import on_press, on_drag, on_release
 from canvasmanager import CanvasManager
 from activeblocklist import ActiveBlockList
 from block_persistence import save_all_canvases, load_all_canvases
+from help_window import show_help_window
 import mousecontrol
 
 # ====== Initialize App ======
@@ -23,6 +24,11 @@ logging.basicConfig(
 # ====== Canvas Manager ======
 canvas_manager = CanvasManager(root)
 mousecontrol.canvas_manager = canvas_manager    
+
+# ====== Help window button ======
+help_button = tk.Button(canvas_manager.nav_bar, text="帮助", command=show_help_window)
+help_button.pack(side=tk.RIGHT, padx=5, pady=5)
+
 
 # ====== Sidebar ======
 sidebar = SideList(root, canvas_manager, active_blocks)

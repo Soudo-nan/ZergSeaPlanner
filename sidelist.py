@@ -2,7 +2,6 @@ import logging
 import tkinter as tk
 from config import GRID_SIZE, SIDEBAR_WIDTH, active_blocks
 from gridblock import GridBlock
-from mousecontrol import bind_block_events, on_left_click
 from block_library import create_template_blocks
 
 class SideList:
@@ -66,7 +65,6 @@ class SideList:
         # 刷新 active block list（如果有）
         if hasattr(self.canvas_manager, "on_switch_callback"):
             self.canvas_manager.on_switch_callback(self.canvas_manager.current_canvas_name)
-        bind_block_events(new_block, new_block.canvas, new_block.canvas, on_left_click, lambda e, b=new_block: None)
         logging.info(f"Block copied successfully: {new_block}")
 
     def add_block_item(self, block, description, add_callback):
