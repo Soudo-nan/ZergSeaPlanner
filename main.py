@@ -76,8 +76,6 @@ def on_closing():
     for name, canvas in canvas_manager.canvases.items():
         blocks = canvas_manager.canvas_blocks.get(canvas, [])
         canvas_blocks_by_name[name] = blocks
-        for b in blocks:
-            print(f"Saving block: row={b.row}, col={b.col}, width={b.width}, height={b.height}, tag={b.tag}, label={b.label}")
     save_all_canvases(canvas_blocks_by_name)
     root.destroy()
 
