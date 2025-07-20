@@ -49,8 +49,8 @@ def load_all_canvases(canvas_manager, filename=SAVE_FILE):
         for bdata in block_list:
             block = GridBlock(
                 canvas,
-                bdata["row"],
                 bdata["col"],
+                bdata["row"],
                 bdata["width"],
                 bdata["height"],
                 bdata["color"],
@@ -59,7 +59,9 @@ def load_all_canvases(canvas_manager, filename=SAVE_FILE):
                 radius=bdata.get("radius", 0),
                 circle_color=bdata.get("circle_color", "green")
             )
-            block.draw()
+            block.draw(offset=True)
+            print(f"Loading block: row={bdata['row']}, col={bdata['col']}. width={bdata['width']}, height={bdata['height']}, tag={bdata.get('tag')}, label={bdata.get('label')}")
             restored_blocks.append(block)
 
         canvas_manager.canvas_blocks[canvas].extend(restored_blocks)
+

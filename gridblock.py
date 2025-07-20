@@ -73,9 +73,17 @@ class GridBlock:
 
 
     def move_to_grid(self, col, row):
-        self.col = max(0, col)
-        self.row = max(0, row)
-        self.draw()
+        dx = (col - self.col) * GRID_SIZE
+        dy = (row - self.row) * GRID_SIZE
+        self.col = col
+        self.row = row
+
+        if self.id:
+            self.canvas.move(self.id, dx, dy)
+        if self.text_id:
+            self.canvas.move(self.text_id, dx, dy)
+        if self.circle_id:
+            self.canvas.move(self.circle_id, dx, dy)
 
     def contains_point(self, x, y):
         x1 = self.col * GRID_SIZE
