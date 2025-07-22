@@ -1,5 +1,3 @@
-# block_persistence.py
-
 import json
 import os
 from gridblock import GridBlock
@@ -29,10 +27,11 @@ def save_all_canvases(canvas_blocks_dict, filename=SAVE_FILE):
                 "color": b.color,
                 "tag": b.tag,
                 "label": b.label,
-                "radius": b.radius,
+                "radius": b.radius,  
+                "original_radius": getattr(b, "original_radius", b.radius),  # 保存原始射程
                 "circle_color": b.circle_color,
             })
-            print(f"[SAVE] Canvas={canvas_name}, row={b.row}, col={b.col},size=({b.width}x{b.height}), tag={b.tag}, label={b.label}")
+            print(f"[SAVE] Canvas={canvas_name}, row={b.row}, col={b.col}, size=({b.width}x{b.height}), tag={b.tag}, label={b.label}")
         data[canvas_name] = block_data
 
     with open(filename, "w", encoding="utf-8") as f:
@@ -63,7 +62,6 @@ def load_all_canvases(canvas_manager, filename=SAVE_FILE):
 
         restored_blocks = []
         for bdata in block_list:
-            # 注意参数顺序: col, row, width, height...
             block = GridBlock(
                 canvas,
                 bdata["col"],
@@ -76,12 +74,13 @@ def load_all_canvases(canvas_manager, filename=SAVE_FILE):
                 radius=bdata.get("radius", 0),
                 circle_color=bdata.get("circle_color", "green")
             )
+            # 恢复 original_radius（如果没有就默认等于 radius）
+            block.original_radius = bdata.get("original_radius", bdata.get("radius", 0))
             block.draw(offset=True)
             print(f"[LOAD] Canvas={canvas_name}, row={bdata['row']}, col={bdata['col']}, size=({bdata['width']}x{bdata['height']}), tag={bdata.get('tag')}, label={bdata.get('label')}")
 
             restored_blocks.append(block)
 
-        # 恢复后的 blocks 添加到 canvas_manager
         canvas_manager.canvas_blocks[canvas].extend(restored_blocks)
 
     print(f"[LOAD] 加载完成：{filename}")
