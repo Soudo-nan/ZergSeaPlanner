@@ -1,6 +1,6 @@
 import logging
 import tkinter as tk
-from config import GRID_SIZE, canvas_list, canvas_size_dict, canvas_forbidden_dict
+from config import GRID_SIZE, canvas_list, canvas_size_dict, canvas_forbidden_dict, CANVAS_VIEW_WIDTH, CANVAS_VIEW_HEIGHT
 
 class CanvasManager:
     def __init__(self, parent):
@@ -11,8 +11,8 @@ class CanvasManager:
         self.canvas_frame.pack(side=tk.LEFT)
         self.canvas_blocks = {}
         self.grid_cache = {}
-        self.canvas_sizes = {}  # 新增
-        self.forbidden_cells = {}  # 新增
+        self.canvas_sizes = {}
+        self.forbidden_cells = {}
 
         self.nav_bar = tk.Frame(self.canvas_frame)
         self.nav_bar.pack(side=tk.TOP, anchor="nw", fill=tk.X)
@@ -28,14 +28,24 @@ class CanvasManager:
             return
 
         width, height = canvas_size_dict.get(name, (20, 15))
+        outer_frame = tk.Frame(self.canvas_frame)
         canvas = tk.Canvas(
-            self.canvas_frame,
-            width=GRID_SIZE * width,
-            height=GRID_SIZE * height,
-            bg="white"
+            outer_frame,
+            width=GRID_SIZE * CANVAS_VIEW_WIDTH,
+            height=GRID_SIZE * CANVAS_VIEW_HEIGHT,
+            bg="white",
+            scrollregion=(0, 0, width * GRID_SIZE, height * GRID_SIZE)
         )
+        x_scroll = tk.Scrollbar(outer_frame, orient=tk.HORIZONTAL, command=canvas.xview)
+        y_scroll = tk.Scrollbar(outer_frame, orient=tk.VERTICAL, command=canvas.yview)
+        canvas.configure(xscrollcommand=x_scroll.set, yscrollcommand=y_scroll.set)
+        canvas.grid(row=0, column=0, sticky="nsew")
+        y_scroll.grid(row=0, column=1, sticky="ns")
+        x_scroll.grid(row=1, column=0, sticky="ew")
+        outer_frame.grid_rowconfigure(0, weight=1)
+        outer_frame.grid_columnconfigure(0, weight=1)
+
         self.canvas_sizes[canvas] = (width, height)
-        # 读取config里的不可放置区，支持范围
         forbidden = set()
         for item in canvas_forbidden_dict.get(name, []):
             if isinstance(item, tuple) and len(item) == 2 and all(isinstance(i, tuple) for i in item):
@@ -51,6 +61,7 @@ class CanvasManager:
         self.draw_grid(canvas, width, height)
         self.canvases[name] = canvas
         self.canvas_blocks[canvas] = []
+        canvas.outer_frame = outer_frame
 
     def create_nav_button(self, name):
         button = tk.Button(self.nav_bar, text=name, command=lambda: self.switch_to(name))
@@ -58,9 +69,11 @@ class CanvasManager:
 
     def switch_to(self, name):
         if self.current_canvas_name:
-            self.canvases[self.current_canvas_name].pack_forget()
+            canvas = self.canvases[self.current_canvas_name]
+            canvas.outer_frame.pack_forget()
         self.current_canvas_name = name
-        self.canvases[name].pack()
+        canvas = self.canvases[name]
+        canvas.outer_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         # Trigger callback if defined
         if hasattr(self, 'on_switch_callback'):

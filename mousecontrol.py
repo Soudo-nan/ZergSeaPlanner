@@ -3,29 +3,47 @@ from config import GRID_SIZE, GRID_WIDTH, GRID_HEIGHT
 from gridblock import GridBlock
 from canvasmanager import CanvasManager
 
-# Internal drag target for tracking the currently dragged block
 current_dragged_block = None
 canvas_manager = None  # 由 main.py 注入
 
+# 新增：记录鼠标在 block 内的偏移
+drag_offset_x = 0
+drag_offset_y = 0
+
 def on_press(event, blocks):
-    global current_dragged_block
+    global current_dragged_block, drag_offset_x, drag_offset_y
     current_dragged_block = None
     event.widget.focus_set()
 
+    canvas = event.widget
+    # 转换为画布坐标
+    canvas_x = canvas.canvasx(event.x)
+    canvas_y = canvas.canvasy(event.y)
+
     for block in reversed(blocks):
-        if block.contains_point(event.x, event.y):
+        if block.contains_point(canvas_x, canvas_y):
             current_dragged_block = block
-            logging.debug(f"Mouse down at ({event.x}, {event.y}), dragging block: {block}")
+            block_left = block.col * GRID_SIZE
+            block_top = block.row * GRID_SIZE
+            drag_offset_x = canvas_x - block_left
+            drag_offset_y = canvas_y - block_top
+            logging.debug(f"Mouse down at ({canvas_x}, {canvas_y}), dragging block: {block}, offset=({drag_offset_x},{drag_offset_y})")
             break
 
 def on_drag(event, blocks):
-    global current_dragged_block
+    global current_dragged_block, drag_offset_x, drag_offset_y
 
     if current_dragged_block:
-        grid_x = event.x // GRID_SIZE
-        grid_y = event.y // GRID_SIZE
-
         canvas = event.widget
+        # 转换为画布坐标
+        canvas_x = canvas.canvasx(event.x)
+        canvas_y = canvas.canvasy(event.y)
+
+        new_left = canvas_x - drag_offset_x
+        new_top = canvas_y - drag_offset_y
+        grid_x = int(new_left // GRID_SIZE)
+        grid_y = int(new_top // GRID_SIZE)
+
         if canvas_manager and canvas in canvas_manager.canvas_sizes:
             width, height = canvas_manager.canvas_sizes[canvas]
             forbidden_cells = canvas_manager.forbidden_cells.get(canvas, set())
@@ -33,7 +51,6 @@ def on_drag(event, blocks):
             width, height = GRID_WIDTH, GRID_HEIGHT
             forbidden_cells = set()
 
-        # 检查是否有重叠到不可放置区
         def is_in_forbidden_area(x, y, w, h, forbidden):
             for dx in range(w):
                 for dy in range(h):
@@ -64,6 +81,4 @@ def on_drag(event, blocks):
 
 def on_release(event, blocks):
     global current_dragged_block
-    if current_dragged_block:
-        logging.debug(f"Released block {current_dragged_block}")
     current_dragged_block = None

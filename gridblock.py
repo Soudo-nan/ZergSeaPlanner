@@ -62,10 +62,12 @@ class GridBlock:
             r = self.radius * GRID_SIZE
             self.circle_id = canvas.create_oval(
                 cx - r, cy - r, cx + r, cy + r,
-                outline=self.circle_color, width=2, dash=(4, 2)
+                fill="",  # 空心
+                outline=self.circle_color,
+                width=2,
+                dash=(4, 2)  # 虚线
             )
-        else:
-            self.circle_id = None
+            canvas.tag_raise(self.circle_id)
 
         # Optionally update self.canvas if not already assigned
         if self.canvas is None:
