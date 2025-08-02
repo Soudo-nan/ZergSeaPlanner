@@ -63,6 +63,10 @@ class CanvasManager:
         self.canvas_blocks[canvas] = []
         canvas.outer_frame = outer_frame
 
+        # 绑定键盘事件
+        canvas.bind("<Key>", self.on_canvas_key)
+        canvas.focus_set()
+
     def create_nav_button(self, name):
         button = tk.Button(self.nav_bar, text=name, command=lambda: self.switch_to(name))
         button.pack(side=tk.LEFT, padx=5, pady=5)
@@ -119,3 +123,15 @@ class CanvasManager:
 
     def set_on_switch_callback(self, callback):
         self.on_switch_callback = callback
+
+    def on_canvas_key(self, event):
+        # 视角移动步长（单位：像素/格数）
+        move_unit = 3
+        if event.char.lower() == 'w':
+            event.widget.yview_scroll(-move_unit, "units")
+        elif event.char.lower() == 's':
+            event.widget.yview_scroll(move_unit, "units")
+        elif event.char.lower() == 'a':
+            event.widget.xview_scroll(-move_unit, "units")
+        elif event.char.lower() == 'd':
+            event.widget.xview_scroll(move_unit, "units")

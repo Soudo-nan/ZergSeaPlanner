@@ -35,10 +35,17 @@ class SideList:
         self.scroll_canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
 
+        # 鼠标滚轮绑定
+        self.scroll_canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+
         self.saved_blocks = []
 
         # Load initial blocks
         create_template_blocks(self, self.copy_to_canvas)
+
+    def _on_mousewheel(self, event):
+        # Windows下event.delta为120的倍数，负为下滚，正为上滚
+        self.scroll_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
     def copy_to_canvas(self, block):
         if block is None:
@@ -111,3 +118,4 @@ class SideList:
                 self.add_block_item(block, desc, cb)
             except Exception as e:
                 logging.error(f"Adding block failed: {e}")
+        self.scroll_canvas.yview_moveto(0)
